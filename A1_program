@@ -1,0 +1,48 @@
+def get_smallest_size_input():
+    smallest_paper = int(input())
+
+    if 2 <= smallest_paper <= 30:
+        return smallest_paper
+    else:
+        print("Wrong input, please input a number from 2 to 30")
+        get_smallest_size_input()
+
+def get_papers_available(smallest_paper):
+    papers_available = str(input())
+    papers_expected = smallest_paper - 1
+    papers_available = papers_available.split()
+
+    if len(papers_available) > papers_expected:
+        print("Incorrect input, please input only the numbers of papers you have specified")
+        get_papers_available(smallest_paper)
+    
+    else:
+        for i in range(len(papers_available)):
+            papers_available[i] = int(papers_available[i])
+            if papers_available[i] > pow(10, 9):
+                print("Incorrect input, please input only the numbers of papers you have specified")
+                get_papers_available(smallest_paper)
+        return papers_available
+
+def check_area(smallest_paper, papers_available):
+    a1_area = 500000
+    total_area = 0
+    i = 1
+    for paper in papers_available:
+        total_area += (500000 * pow(0.5, i)) * paper
+        i +=1
+        print(total_area)
+    
+    if total_area >= a1_area:
+        print("possible")
+    else:
+        print("impossible")
+
+
+
+if __name__ == "__main__":
+    smallest_paper = get_smallest_size_input()
+    papers_available = get_papers_available(smallest_paper)
+    check_area(smallest_paper, papers_available)
+
+
