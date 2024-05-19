@@ -1,3 +1,6 @@
+from bintreefile import Bintree
+from bintreefile import print2D
+
 def get_smallest_size_input():
     smallest_paper = int(input())
 
@@ -29,7 +32,7 @@ def check_area(smallest_paper, papers_available):
     total_area = 0
     i = 1
     for paper in papers_available:
-        total_area += (500000 * pow(0.5, i)) * paper
+        total_area += paper_area(i) * paper
         i +=1
         print(total_area)
     
@@ -38,11 +41,53 @@ def check_area(smallest_paper, papers_available):
     else:
         print("impossible")
 
+def paper_area(paper_size):
+    return (500000 * pow(0.5, paper_size))
 
 
-if __name__ == "__main__":
-    smallest_paper = get_smallest_size_input()
-    papers_available = get_papers_available(smallest_paper)
-    check_area(smallest_paper, papers_available)
+def paper_longside(paper_size):
+    a2_long = pow(2, -5/4)
+    a2_short = pow(2, -3/4)
+
+    if paper_size == 2:
+        return a2_long
+
+    else:
+        old_long = a2_long
+        old_short = a2_short
+        for i in range(paper_size - 2):
+            long_side = old_short
+            short_side = old_long/2
+            old_long = long_side
+            old_short = short_side
+        
+        return long_side
+
+    
+
+def get_tape_lenght(smallest_paper, papers_available):
+    a1_area = 500000
+    total_area = 0
+    tree = Bintree()
+    print(len(papers_available))
+    for i in range(len(papers_available)):
+        if papers_available[i] > 0:
+            while papers_available[i] > 0:
+                total_area += paper_area(i+1)
+                print(total_area)
+                papers_available[i] = papers_available[i] - 1
+                tree.put(i+2)
+                if total_area >= a1_area:
+                    break
+    print(papers_available)
+    print2D(tree.root)
+
+get_tape_lenght(4, [1, 0, 5])
+        
+
+#if __name__ == "__main__":
+    #smallest_paper = get_smallest_size_input()
+    #papers_available = get_papers_available(smallest_paper)
+    #check_area(smallest_paper, papers_available)
 
 
