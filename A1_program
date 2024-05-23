@@ -1,6 +1,13 @@
 from bintreefile import Bintree
 from bintreefile import print2D
 
+class areafel(Exception):
+    """
+    Exception for when area is not big enough to form A1 paper, inherits from Exception
+    """
+
+    pass
+
 def get_smallest_size_input():
     smallest_paper = int(input())
 
@@ -39,15 +46,15 @@ def check_area(smallest_paper, papers_available):
     if total_area >= a1_area:
         print("possible")
     else:
-        print("impossible")
+        raise areafel
 
 def paper_area(paper_size):
     return (500000 * pow(0.5, paper_size))
 
 
 def paper_longside(paper_size):
-    a2_long = pow(2, -5/4)
-    a2_short = pow(2, -3/4)
+    a2_short= pow(2, -5/4)
+    a2_long = pow(2, -3/4)
 
     if paper_size == 2:
         return a2_long
@@ -62,13 +69,32 @@ def paper_longside(paper_size):
             old_short = short_side
         
         return long_side
+    
+def paper_shortside(paper_size):
+    a2_short= pow(2, -5/4)
+    a2_long = pow(2, -3/4)
+
+    if paper_size == 2:
+        return a2_long
+
+    else:
+        old_long = a2_long
+        old_short = a2_short
+        for i in range(paper_size - 2):
+            long_side = old_short
+            short_side = old_long/2
+            old_long = long_side
+            old_short = short_side
+        
+        return short_side
+
 
     
 
-def get_tape_lenght(smallest_paper, papers_available):
+def get_papers_used(smallest_paper, papers_available):
     a1_area = 500000
     total_area = 0
-    tree = Bintree()
+    #tree = Bintree()
     print(len(papers_available))
     for i in range(len(papers_available)):
         if papers_available[i] > 0:
@@ -76,18 +102,58 @@ def get_tape_lenght(smallest_paper, papers_available):
                 total_area += paper_area(i+1)
                 print(total_area)
                 papers_available[i] = papers_available[i] - 1
-                tree.put(i+2)
+                #tree.put(i+2)
                 if total_area >= a1_area:
                     break
-    print(papers_available)
-    print2D(tree.root)
+    #print2D(tree.root)
+    return papers_available
 
-get_tape_lenght(4, [1, 0, 5])
+def get_tape_lenght(papers_used):
+    paper_size = 2
+    tape_lenght = 0
+    for i in range(len(papers_used)):
+        tape_lenght += papers_used[i] * paper_longside(paper_size)
+        #print(tape_lenght)
+        #print(paper_size)
+        paper_size +=1
+
+    
+    tape_lenght = tape_lenght - paper_longside(2)
+    tape_lenght = tape_lenght + paper_shortside(4) * 2
+
+    return tape_lenght
+
+"""
+papers_at_start = [1, 0, 5]
+temp = papers_at_start.copy()
+papers_not_used = get_papers_used(4, temp)
+print(papers_at_start)
+print(papers_not_used)
+papers_used = []
+for i in range(len(papers_at_start)):
+    print(papers_at_start[i])
+    print(papers_not_used[i])
+    papers_used.append(papers_at_start[i] - papers_not_used[i])
+
+print(papers_used)
+
+tape_lenght = get_tape_lenght(papers_used)
+print(tape_lenght)
+"""
         
 
-#if __name__ == "__main__":
-    #smallest_paper = get_smallest_size_input()
-    #papers_available = get_papers_available(smallest_paper)
-    #check_area(smallest_paper, papers_available)
-
-
+if __name__ == "__main__":
+    smallest_paper = get_smallest_size_input()
+    papers_available = get_papers_available(smallest_paper)
+    try:
+        check_area(smallest_paper, papers_available)
+        print(papers_available)
+        temp = papers_available.copy()
+        papers_not_used = get_papers_used(4, temp)
+        papers_used = []
+        for i in range(len(papers_available)):
+            papers_used.append(papers_available[i] - papers_not_used[i])
+        tape_lenght = get_tape_lenght(papers_used)
+        print(tape_lenght)
+    except: 
+        print("impossible")
