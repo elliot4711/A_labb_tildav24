@@ -103,4 +103,3 @@ try:
         raise areafel
 except:
     print("impossible")
-
