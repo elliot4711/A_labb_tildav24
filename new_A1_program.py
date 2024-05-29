@@ -28,8 +28,8 @@ def get_papers_available(smallest_paper):
     """
 
     papers_available = str(input())
-    papers_expected = smallest_paper - 1
     papers_available = papers_available.split()
+    papers_expected = smallest_paper - 1
 
     if len(papers_available) > papers_expected or len(papers_available) < papers_expected:
         print("Incorrect input, please input only the numbers of paper types you have specified")
